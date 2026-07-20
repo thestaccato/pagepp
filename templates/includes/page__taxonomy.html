@@ -1,0 +1,8 @@
+{% if page.tags %}
+  <span class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+      {{ page.tags }}
+    </span>
+  </span>
+{% endif %}

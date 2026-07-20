@@ -1,0 +1,1 @@
+<i class="fa fa-clock" aria-hidden="true"></i> {% assign words = page.content | strip_html | size %}{% assign minutes = words | abs %}{% assign wpm = site.words_per_minute | default: "160" %}{{ minutes }} min read

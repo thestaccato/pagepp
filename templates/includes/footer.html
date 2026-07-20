@@ -1,0 +1,61 @@
+{% include base_path %}
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    <li><strong>Follow:</strong></li>
+    {% if author.email %}
+      <li><a href="mailto:{{ author.email }}"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i> Email</a></li>
+    {% endif %}
+    {% if author.googlescholar %}
+      <li><a href="{{ author.googlescholar }}"><i class="ai ai-google-scholar ai-fw" aria-hidden="true"></i> Google Scholar</a></li>
+    {% endif %}
+    {% if author.orcid %}
+      <li><a href="{{ author.orcid }}"><i class="ai ai-orcid ai-fw" aria-hidden="true"></i> ORCID</a></li>
+    {% endif %}
+    {% if author.pubmed %}
+      <li><a href="{{ author.pubmed }}"><i class="ai ai-pubmed ai-fw" aria-hidden="true"></i> PubMed</a></li>
+    {% endif %}
+    {% if author.github %}
+      <li><a href="https://github.com/{{ author.github }}"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+    {% endif %}
+    {% if author.gitlab %}
+      <li><a href="https://gitlab.com/{{ author.gitlab }}"><i class="fab fa-fw fa-gitlab" aria-hidden="true"></i> GitLab</a></li>
+    {% endif %}
+    {% if author.git %}
+      <li><a href="{{ author.git }}"><i class="fab fa-fw fa-square-git" aria-hidden="true"></i> Git</a></li>
+    {% endif %}
+    {% if author.codeberg %}
+      <li><a href="https://codeberg.org/{{ author.codeberg }}"><i class="fab fa-fw fa-codeberg" aria-hidden="true"></i> Codeberg</a></li>
+    {% endif %}
+    {% if author.forgejo %}
+      <li><a href="{{ author.forgejo }}"><i class="fab fa-fw fa-forgejo" aria-hidden="true"></i> Forgejo</a></li>
+    {% endif %}
+    {% if author.sourcehut %}
+      <li><a href="{{ author.sourcehut }}"><i class="fa-regular fa-fw fa-circle" aria-hidden="true"></i> SourceHut</a></li>
+    {% endif %}
+    {% if author.matrix %}
+      <li><a href="{{ author.matrix }}"><i class="fab fa-fw fa-matrix" aria-hidden="true"></i> Matrix</a></li>
+    {% endif %}
+    {% if author.linkedin %}
+      <li><a href="https://www.linkedin.com/in/{{ author.linkedin }}"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+    {% endif %}
+    {% if author.twitter %}
+      <li><a href="https://twitter.com/{{ author.twitter }}"><i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i> X (Twitter)</a></li>
+    {% endif %}
+    {% if author.bluesky %}
+      <li><a href="https://bsky.app/profile/{{ author.bluesky }}"><i class="fab fa-fw fa-bluesky" aria-hidden="true"></i> Bluesky</a></li>
+    {% endif %}
+    {% if author.mastodon %}
+      <li><a href="{{ author.mastodon }}"><i class="fab fa-fw fa-mastodon" aria-hidden="true"></i> Mastodon</a></li>
+    {% endif %}
+    {% if author.youtube %}
+      <li><a href="https://www.youtube.com/@{{ author.youtube }}"><i class="fab fa-fw fa-youtube" aria-hidden="true"></i> YouTube</a></li>
+    {% endif %}
+    <li><a href="{{ site.baseurl }}/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">
+  &copy; {{ site.time | date_to_string | slice: -4, 4 }} {{ site.name }}, Powered by <strong><a href="https://github.com/thestaccato/pagepp">pagepp</a></strong>.
+  <br />Site last updated {{ site.time | date_to_string }}, <a href="/sitemap.xml">Sitemap</a>
+</div>

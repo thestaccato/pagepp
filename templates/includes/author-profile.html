@@ -1,0 +1,58 @@
+{% include base_path %}
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  <div class="author__content">
+    <h3 class="author__name">{{ author.name }}</h3>
+    {% if author.bio %}<p class="author__bio">{{ author.bio }}</p>{% endif %}
+  </div>
+
+  <div class="author__urls-wrapper">
+    <input type="checkbox" id="author-follow-toggle" class="author-follow-input">
+    <label for="author-follow-toggle" class="btn btn--inverse">Follow</label>
+    <ul class="author__urls social-icons">
+      {% if author.email %}
+        <li><a href="mailto:{{ author.email }}"><i class="fas fa-fw fa-envelope icon-pad-right" aria-hidden="true"></i>Email</a></li>
+      {% endif %}
+      {% if author.googlescholar %}
+        <li><a href="{{ author.googlescholar }}"><i class="ai ai-google-scholar ai-fw icon-pad-right"></i>Google Scholar</a></li>
+      {% endif %}
+      {% if author.orcid %}
+        <li><a href="{{ author.orcid }}"><i class="ai ai-orcid ai-fw icon-pad-right"></i>ORCID</a></li>
+      {% endif %}
+      {% if author.pubmed %}
+        <li><a href="{{ author.pubmed }}"><i class="ai ai-pubmed ai-fw icon-pad-right"></i>PubMed</a></li>
+      {% endif %}
+      {% if author.github %}
+        <li><a href="https://github.com/{{ author.github }}"><i class="fab fa-fw fa-github icon-pad-right" aria-hidden="true"></i>GitHub</a></li>
+      {% endif %}
+      {% if author.codeberg %}
+        <li><a href="https://codeberg.org/{{ author.codeberg }}"><i class="fab fa-fw fa-codeberg icon-pad-right" aria-hidden="true"></i>Codeberg</a></li>
+      {% endif %}
+      {% if author.forgejo %}
+        <li><a href="{{ author.forgejo }}"><i class="fab fa-fw fa-forgejo icon-pad-right" aria-hidden="true"></i>Forgejo</a></li>
+      {% endif %}
+      {% if author.sourcehut %}
+        <li><a href="{{ author.sourcehut }}"><i class="fa-regular fa-fw fa-circle icon-pad-right" aria-hidden="true"></i>SourceHut</a></li>
+      {% endif %}
+      {% if author.matrix %}
+        <li><a href="{{ author.matrix }}"><i class="fab fa-fw fa-matrix icon-pad-right" aria-hidden="true"></i>Matrix</a></li>
+      {% endif %}
+      {% if author.linkedin %}
+        <li><a href="https://www.linkedin.com/in/{{ author.linkedin }}"><i class="fab fa-fw fa-linkedin icon-pad-right" aria-hidden="true"></i>LinkedIn</a></li>
+      {% endif %}
+      {% if author.twitter %}
+        <li><a href="https://twitter.com/{{ author.twitter }}"><i class="fab fa-fw fa-x-twitter icon-pad-right" aria-hidden="true"></i>X (Twitter)</a></li>
+      {% endif %}
+      {% if author.bluesky %}
+        <li><a href="https://bsky.app/profile/{{ author.bluesky }}"><i class="fab fa-fw fa-bluesky icon-pad-right" aria-hidden="true"></i>Bluesky</a></li>
+      {% endif %}
+      {% if author.mastodon %}
+        <li><a href="{{ author.mastodon }}"><i class="fab fa-fw fa-mastodon icon-pad-right" aria-hidden="true"></i>Mastodon</a></li>
+      {% endif %}
+      {% if author.youtube %}
+        <li><a href="https://www.youtube.com/@{{ author.youtube }}"><i class="fab fa-fw fa-youtube icon-pad-right" aria-hidden="true"></i>YouTube</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
