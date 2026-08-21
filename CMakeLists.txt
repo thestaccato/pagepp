@@ -35,3 +35,5 @@ add_executable(pagepp
 
 target_include_directories(pagepp PRIVATE src)
 target_link_libraries(pagepp PRIVATE cmark tomlplusplus::tomlplusplus)
+
+install(TARGETS pagepp DESTINATION bin)
