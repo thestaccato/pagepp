@@ -1,1 +1,1 @@
-{% assign chars = page.content | strip_html | size %}{% assign words = chars | abs | divided_by(5) %}{% assign minutes = words | divided_by(160) %}{% if minutes < 1 %}1 min read{% else %}{{ minutes }} min read{% endif %}
+<i class="fa fa-clock" aria-hidden="true"></i> {% assign words = page.content | strip_html | size %}{% assign minutes = words | abs %}{% assign wpm = site.words_per_minute | default: "160" %}{{ minutes }} min read

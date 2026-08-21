@@ -121,6 +121,8 @@ void SiteBuilder::build_pages() {
             std::string page_layout = fm.get_str("layout", "single");
             std::string page_title = fm.get_str("title", "");
             std::string page_permalink = fm.get_str("permalink", "");
+            bool author_profile = fm.get_bool("author_profile", false);
+
             if (page_permalink.empty()) {
                 page_permalink = "/" + stem + "/";
             }
@@ -132,7 +134,7 @@ void SiteBuilder::build_pages() {
             page_ctx.set("page.url", page_permalink);
             page_ctx.set("page.layout", page_layout);
             page_ctx.set("page.content", html_body);
-            page_ctx.set("page.toc", fm.get_str("toc", ""));
+            page_ctx.set("page.author_profile", author_profile ? "true" : "false");
 
             if (fm.has("redirect_from")) {
                 auto redirs = fm.get_array("redirect_from");
@@ -181,7 +183,7 @@ void SiteBuilder::build_section(const SectionInfo& sec) {
     page_ctx.set("page.title", page_title);
     page_ctx.set("page.url", sec.permalink);
     page_ctx.set("page.layout", page_layout);
-    page_ctx.set("page.toc", fm.get_str("toc", ""));
+    page_ctx.set("page.author_profile", fm.get_bool("author_profile", false) ? "true" : "false");
 
     page_ctx.set("content", html_body);
 
@@ -222,9 +224,9 @@ Context SiteBuilder::make_context() {
     ctx.set("site.locale", config_.locale);
     ctx.set("site.time", utils::now_date("%Y-%m-%d %H:%M:%S %z"));
 
-    for (auto& [k, v] : config_.social) {
-        ctx.set("social." + k, v);
-        ctx.set("site.social." + k, v);
+    for (auto& [k, v] : config_.author) {
+        ctx.set("author." + k, v);
+        ctx.set("site.author." + k, v);
     }
 
     for (size_t i = 0; i < config_.navigation.size(); i++) {
@@ -274,8 +276,6 @@ Context SiteBuilder::make_page_context(const ContentItem& item) {
     }
     ctx.set("page.content", item.html_body);
     ctx.set("page.collection", item.collection);
-    if (item.fm.flat.count("toc"))
-        ctx.set("page.toc", item.fm.flat.at("toc"));
     if (item.fm.flat.count("excerpt"))
         ctx.set("page.excerpt", item.fm.flat.at("excerpt"));
     if (item.fm.flat.count("date"))
@@ -296,6 +296,8 @@ Context SiteBuilder::make_page_context(const ContentItem& item) {
         ctx.set("page.bibtexurl", item.fm.flat.at("bibtexurl"));
     if (item.fm.flat.count("category"))
         ctx.set("page.category", item.fm.flat.at("category"));
+    if (item.fm.flat.count("author_profile"))
+        ctx.set("page.author_profile", item.fm.flat.at("author_profile"));
     if (item.fm.flat.count("read_time"))
         ctx.set("page.read_time", item.fm.flat.at("read_time"));
     if (item.fm.flat.count("share"))

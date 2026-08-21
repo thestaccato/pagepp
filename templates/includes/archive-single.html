@@ -1,0 +1,35 @@
+{% include base_path %}
+<div class="list__item">
+  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+    <h2 class="archive__item-title" itemprop="headline">
+      <a href="{{ site.baseurl }}{{ post.url }}" rel="permalink">{{ post.title }}</a>
+    </h2>
+{% if post.collection == 'teaching' %}
+    <p> {{ post.type }}, <i>{{ post.venue }}</i>, {{ post.date | default: "1900-01-01" | date_to_string | slice: -4, 4 }} </p>
+{% endif %}
+{% if post.collection == 'publications' %}
+    <p>Published in <i>{{ post.venue }}</i>, {{ post.date | default: "1900-01-01" | date_to_string | slice: -4, 4 }} </p>
+{% endif %}
+{% if post.collection == 'posts' %}
+    <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> Published:</strong> <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | default: "1900-01-01" | date_to_string }}</time></p>
+{% endif %}
+{% if post.excerpt %}
+    <p class="archive__item-excerpt" itemprop="description">{{ post.excerpt | markdownify }}</p>
+{% endif %}
+{% if post.citation and post.paperurl %}
+    <p style="font-size: smaller">Recommended citation: {{ post.citation }}<br /><a href="{{ post.paperurl }}">Download Paper</a></p>
+{% endif %}
+{% if post.citation and !post.paperurl %}
+    <p style="font-size: smaller">Recommended citation: {{ post.citation }}</p>
+{% endif %}
+{% if !post.citation and post.paperurl %}
+    <p style="font-size: smaller"><a href="{{ post.paperurl }}">Download Paper</a></p>
+{% endif %}
+{% if post.slidesurl %}
+    <p style="font-size: smaller"><a href="{{ post.slidesurl }}">Download Slides</a></p>
+{% endif %}
+{% if post.bibtexurl %}
+    <p style="font-size: smaller"><a href="{{ post.bibtexurl }}">Download Bibtex</a></p>
+{% endif %}
+  </article>
+</div>
