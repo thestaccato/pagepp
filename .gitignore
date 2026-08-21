@@ -1,5 +1,8 @@
 # Build
 build/
 
+# Nix build result
+result
+
 # Output
 public/
