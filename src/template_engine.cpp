@@ -190,7 +190,11 @@ std::vector<TemplateNode> TemplateEngine::parse(const std::string& tmpl) {
                                 d2--;
                                 if (d2 == 0) {
                                     std::string eb = tmpl.substr(else_body_start, ni2 - else_body_start);
-                                    n.else_children = parse(eb);
+                                    TemplateNode else_n;
+                                    else_n.type = NodeType::Text;
+                                    else_n.raw = "else_true";
+                                    else_n.children = parse(eb);
+                                    n.else_children.push_back(else_n);
                                     pos = nte2 + 2;
                                 } else { sp2 = nte2 + 2; }
                             } else { sp2 = nte2 + 2; }
@@ -230,6 +234,10 @@ std::vector<TemplateNode> TemplateEngine::parse(const std::string& tmpl) {
                         } else { search_pos = nte + 2; }
                     } else { search_pos = nte + 2; }
                 }
+                nodes.push_back(n);
+            } else if (tag == "toc") {
+                TemplateNode n;
+                n.type = NodeType::Toc;
                 nodes.push_back(n);
             } else if (utils::starts_with(tag, "include ")) {
                 TemplateNode n;
@@ -326,8 +334,13 @@ std::string TemplateEngine::render_node(const TemplateNode& node, Context& ctx) 
                         fargs = utils::split(args_str, ',');
                         for (auto& a : fargs) {
                             a = utils::trim(a);
+                            bool quoted = (!a.empty() && (a.front() == '"' || a.front() == '\''));
                             if (!a.empty() && a.front() == '"') a = a.substr(1);
+                            if (!a.empty() && a.front() == '\'') a = a.substr(1);
                             if (!a.empty() && a.back() == '"') a.pop_back();
+                            if (!a.empty() && a.back() == '\'') a.pop_back();
+                            bool is_number = (!a.empty() && std::all_of(a.begin(), a.end(), [](char c){ return std::isdigit(c) || c == '-'; }));
+                            if (!quoted && !is_number && !a.empty()) a = evaluate_variable(a, ctx);
                         }
                     }
                     val = apply_filter(val, fname, fargs, ctx);
@@ -396,6 +409,89 @@ std::string TemplateEngine::render_node(const TemplateNode& node, Context& ctx) 
             if (inc_content.empty()) return "[Include not found: " + node.include_path + "]";
             Context c = ctx;
             return render_string(inc_content, c);
+        }
+
+        case NodeType::Toc: {
+            std::string content = ctx.get("content");
+            if (content.empty()) return "";
+
+            struct Heading { int level; std::string id; std::string text; };
+            std::vector<Heading> headings;
+
+            size_t pos = 0;
+            while (pos < content.size()) {
+                auto tag_start = content.find("<h", pos);
+                if (tag_start == std::string::npos) break;
+
+                auto tag_close = content.find(">", tag_start);
+                if (tag_close == std::string::npos) break;
+
+                std::string tag = content.substr(tag_start, tag_close - tag_start + 1);
+
+                int level = 0;
+                if (tag.size() >= 3 && tag[2] >= '1' && tag[2] <= '6')
+                    level = tag[2] - '0';
+
+                if (level < 1 || level > 6) { pos = tag_close + 1; continue; }
+
+                std::string id;
+                auto id_pos = tag.find("id=\"");
+                if (id_pos != std::string::npos) {
+                    auto id_start = id_pos + 4;
+                    auto id_end = tag.find('"', id_start);
+                    if (id_end != std::string::npos)
+                        id = tag.substr(id_start, id_end - id_start);
+                }
+
+                auto text_end = content.find("</h" + std::to_string(level), tag_close + 1);
+                std::string text;
+                if (text_end != std::string::npos) {
+                    text = utils::strip_html(content.substr(tag_close + 1, text_end - tag_close - 1));
+                    text = utils::trim(text);
+                }
+
+                if (!id.empty() && !text.empty())
+                    headings.push_back({level, id, text});
+
+                pos = (text_end != std::string::npos) ? text_end + 5 : tag_close + 1;
+            }
+
+            if (headings.empty()) return "";
+
+            std::string result;
+            result += "<nav class=\"toc\">\n<ul>\n";
+            std::vector<int> open_levels;
+            for (size_t i = 0; i < headings.size(); i++) {
+                auto& h = headings[i];
+                if (i > 0) {
+                    if (h.level > open_levels.back()) {
+                        // Going deeper: open one <ul> and track it
+                        result += "<ul>\n";
+                        open_levels.push_back(h.level);
+                    } else if (h.level < open_levels.back()) {
+                        // Going shallower: close </li> then close <ul></li> until we reach the right parent
+                        result += "</li>\n";
+                        while (!open_levels.empty() && open_levels.back() > h.level) {
+                            result += "</ul>\n</li>\n";
+                            open_levels.pop_back();
+                        }
+                    } else {
+                        // Same level: close previous </li>
+                        result += "</li>\n";
+                    }
+                } else {
+                    open_levels.push_back(h.level);
+                }
+                result += "<li><a href=\"#" + h.id + "\">" + h.text + "</a>";
+            }
+            // Close all remaining open levels
+            result += "</li>\n";
+            while (open_levels.size() > 1) {
+                result += "</ul>\n</li>\n";
+                open_levels.pop_back();
+            }
+            result += "</ul>\n</nav>\n";
+            return result;
         }
     }
     return "";
@@ -496,7 +592,8 @@ std::string TemplateEngine::apply_filter(const std::string& val, const std::stri
     }
     if (filter == "trim") return utils::trim(val);
     if (filter == "truncatewords") {
-        int n = args.empty() ? 10 : std::stoi(args[0]);
+        int n = 10;
+        if (!args.empty()) { try { n = std::stoi(args[0]); } catch (...) {} }
         return utils::truncatewords(val, n);
     }
     if (filter == "default") return val.empty() ? (args.empty() ? "" : args[0]) : val;
@@ -513,10 +610,25 @@ std::string TemplateEngine::apply_filter(const std::string& val, const std::stri
     }
     if (filter == "slice") {
         if (args.size() >= 2) {
-            int start = std::stoi(args[0]);
-            int len = std::stoi(args[1]);
-            if (start >= 0 && start + len <= (int)val.size())
-                return val.substr(start, len);
+            try {
+                int start = std::stoi(args[0]);
+                int len = std::stoi(args[1]);
+                int sz = (int)val.size();
+                if (start < 0) start = sz + start;
+                if (start >= 0 && start + len <= sz)
+                    return val.substr(start, len);
+            } catch (...) {}
+        }
+        return val;
+    }
+    if (filter == "divided_by") {
+        if (args.size() >= 1) {
+            try {
+                int divisor = std::stoi(args[0]);
+                if (divisor != 0) {
+                    return std::to_string(std::stoi(val) / divisor);
+                }
+            } catch (...) {}
         }
         return val;
     }

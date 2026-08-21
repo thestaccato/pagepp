@@ -1,14 +1,13 @@
 +++
 permalink = "/"
-title = "pagepp - Zero Runtime Dependencies Static Site Generator"
-author_profile = true
+title = "PagePP - A Suckless Static Site Generator"
 +++
 ---
-pagepp is a C++17 static site generator. It reads Markdown content with TOML frontmatter, processes it through a Liquid-compatible template engine, and outputs a complete static HTML site. No runtime dependencies, no JavaScript, no network required at build time.
+PagePP is a C++17 static site generator. It reads Markdown content with TOML frontmatter, processes it through a Liquid-compatible template engine, and outputs a complete static HTML site. No runtime dependencies, no JavaScript, no network required at build time.
 
 Use it for personal websites, project documentation, blogs, academic portfolios, or anything that needs clean static HTML.
 
-# Why pagepp?
+# Why PagePP?
 ---
 
 **Zero runtime dependencies.** No Ruby, no Node.js, no Python required to run the binary. A single C++ executable handles everything. Build once, run anywhere.

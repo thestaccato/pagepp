@@ -2,7 +2,6 @@
 title = "Blog posts"
 layout = "archive"
 permalink = "/posts/"
-author_profile = true
 +++
 ---
 
