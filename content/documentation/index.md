@@ -1,7 +1,7 @@
 +++
 title = "Documentation"
 nav_order = 10
-author_profile = true
+toc = true
 +++
 ---
 
@@ -17,8 +17,8 @@ author_profile = true
 ### Build from Source
 
 ```sh
-git clone <your-repo-url>
-cd site-personal
+git clone https://github.com/thestaccato/pagepp.git
+cd pagepp
 cmake -B build
 cmake --build build
 ```
@@ -70,9 +70,7 @@ url = "https://janedoe.github.io"
 baseurl = ""
 locale = "en-US"
 
-[author]
-name = "Jane Doe"
-bio = "Assistant Professor of Computer Science"
+[social]
 email = "jane@example.com"
 github = "janedoe"
 googlescholar = "https://scholar.google.com/citations?user=XXXXX"
@@ -85,7 +83,6 @@ Edit `content/index.md`:
 ```toml
 +++
 title = "Jane Doe"
-author_profile = true
 +++
 
 Welcome to my portfolio. I am an Assistant Professor
@@ -105,7 +102,6 @@ category = "Journal Articles"
 venue = "Journal of Examples"
 citation = "Doe, J. My First Paper. Journal of Examples, 2024."
 paperurl = "https://example.com/paper.pdf"
-author_profile = true
 +++
 
 This paper explores...
@@ -187,45 +183,36 @@ The site configuration lives at `content/config.toml`.
 - `baseurl` (string) — Base URL path, defaults to `""` (e.g., `/blog` for subdirectory hosting)
 - `locale` (string) — Site locale for `lang` attribute, defaults to `"en-US"`
 
-### Author Section
-
-```toml
-[author]
-name = "Your Name"
-bio = "Short biography shown in sidebar"
-```
-
 ### Social Links
 
 Set any field to show its icon in the footer. Leave empty or omit to hide.
 
-- `email` — Email address (uses `fa-envelope`)
-- `googlescholar` — Full URL (uses `ai-google-scholar`)
-- `orcid` — Full URL (uses `ai-orcid`)
-- `pubmed` — Full URL (uses `ai-pubmed`)
-- `github` — Username only (uses `fa-github`)
-- `gitlab` — Username only (uses `fa-gitlab`)
-- `git` — Full URL (uses `fa-square-git`)
-- `codeberg` — Username only (uses `fa-codeberg`)
-- `forgejo` — Full URL (uses `fa-forgejo`)
-- `sourcehut` — Full URL (uses `fa-circle`)
-- `matrix` — Full URL (uses `fa-matrix`)
-- `linkedin` — Username only (uses `fa-linkedin`)
-- `twitter` — Username only (uses `fa-x-twitter`)
-- `bluesky` — Username or handle (uses `fa-bluesky`)
-- `mastodon` — Full URL (uses `fa-mastodon`)
-- `youtube` — Username or handle (uses `fa-youtube`)
+- `email` — Email address
+- `googlescholar` — Full URL
+- `orcid` — Full URL
+- `github` — Username only
+- `gitlab` — Username only
+- `git` — Full URL
+- `codeberg` — Username only
+- `forgejo` — Full URL
+- `sourcehut` — Full URL
+- `matrix` — Full URL
+- `linkedin` — Username only
+- `bluesky` — Username or handle
+- `mastodon` — Full URL
+- `fediverse` — Full URL
+- `kofi` — Full URL
 
 Username-only fields are automatically prefixed with the service URL:
 - `github`: `https://github.com/<username>`
 - `gitlab`: `https://gitlab.com/<username>`
-- `codeberg`: `https://codeberg.com/<username>`
+- `codeberg`: `https://codeberg.org/<username>`
 - `linkedin`: `https://www.linkedin.com/in/<username>`
-- `twitter`: `https://twitter.com/<username>`
 - `bluesky`: `https://bsky.app/profile/<username>`
-- `youtube`: `https://www.youtube.com/@<username>`
 
-Full-URL fields (email, googlescholar, orcid, pubmed, git, forgejo, sourcehut, matrix, mastodon) use the value as-is.
+Full-URL fields (email, googlescholar, orcid, git, forgejo, sourcehut, matrix, mastodon, fediverse, kofi) use the value as-is.
+
+Icons are inline SVGs with `fill="currentColor"` for automatic light/dark theme support. No external font dependencies.
 
 # Content Format
 ---
@@ -237,7 +224,6 @@ All content files use TOML frontmatter between `+++` delimiters, followed by Mar
 title = "Page Title"
 date = "2024-01-15"
 permalink = "/custom-url/"
-author_profile = true
 tags = ["tag1", "tag2"]
 +++
 
@@ -279,7 +265,6 @@ mkdir content/my-section
 +++
 title = "My Section"
 nav_order = 5
-author_profile = true
 +++
 
 Welcome to my section. Here are my items:
@@ -351,7 +336,6 @@ Blog posts with date-based permalinks.
 +++
 title = "My Blog Post"
 date = "2024-03-15"
-author_profile = true
 tags = ["tutorial", "python"]
 +++
 
@@ -377,7 +361,6 @@ citation = "Author. Title. Journal, 2024."
 paperurl = "https://example.com/paper.pdf"
 slidesurl = "https://example.com/slides.pdf"
 bibtexurl = "https://example.com/paper.bib"
-author_profile = true
 +++
 
 Abstract or summary...
@@ -406,7 +389,6 @@ type = "Talk"
 venue = "Conference Name"
 location = "City, Country"
 slidesurl = "https://example.com/slides.pdf"
-author_profile = true
 +++
 
 Talk description...
@@ -431,7 +413,6 @@ date = "2024-01-10"
 collection = "teaching"
 type = "Seminar"
 venue = "University Name"
-author_profile = true
 +++
 
 Course description...
@@ -468,7 +449,6 @@ These fields work on all content types:
 - `title` (string) — Page title
 - `date` (string) — Date in `YYYY-MM-DD` format
 - `permalink` (string) — Custom URL path (overrides auto-generation)
-- `author_profile` (bool) — Show author profile sidebar
 - `tags` (array) — List of tags for taxonomy display
 - `excerpt` (string) — Short description for listings and feed
 - `nav_order` (int) — Section position in navigation (lower = earlier, section index.md only)
@@ -533,7 +513,7 @@ Variables use dot-path notation:
 ```liquid
 {{ site.title }}          <!-- Resolves site.title from context -->
 {{ page.title }}          <!-- Resolves page.title -->
-{{ author.email }}        <!-- Resolves author.email -->
+{{ social.email }}        <!-- Resolves social.email -->
 ```
 
 Variables can also be resolved without dots:
@@ -565,7 +545,7 @@ default.html  (outer shell: <!doctype html>, <head>, <body>, masthead, footer)
         ├── single.html    (article view with metadata, citation)
         ├── archive.html   (listing view with title)
         ├── splash.html    (hero image or plain content)
-        └── talk.html      (talk detail without sidebar)
+        └── talk.html      (talk detail)
 ```
 
 ### Setting a Layout
@@ -610,11 +590,10 @@ The outer HTML shell. Contains `<head>`, masthead, `{{ content }}`, and footer.
 
 #### `single.html`
 
-Renders a single content page with title, metadata, and optional sidebar.
+Renders a single content page with title, date, and metadata.
 
 ```html
 <div id="main" role="main">
-  {% include sidebar.html %}
   <article class="page">
     <div class="page__inner-wrap">
       <header>
@@ -634,7 +613,6 @@ Renders a section index page with title and content.
 
 ```html
 <div id="main" role="main">
-  {% include sidebar.html %}
   <div class="archive">
     <h1 class="page__title">{{ page.title }}</h1>
     {{ content }}
@@ -665,24 +643,29 @@ Includes are loaded from `templates/includes/` via `{% include "filename" %}`.
 
 - `head.html` — `<head>` contents (meta, title, CSS links)
 - `masthead.html` — Top navigation bar
-- `sidebar.html` — Author profile sidebar (conditional)
 - `footer.html` — Footer with social links and copyright
-- `author-profile.html` — Author bio + social links widget
-- `archive-single.html` — Single item in archive listing
-- `archive-single-talk.html` — Talk-specific archive entry
-- `archive-single-cv.html` — CV-specific compact entry
-- `archive-single-talk-cv.html` — Talk entry in CV view
 - `read-time.html` — Estimated reading time
 - `page__taxonomy.html` — Tags display
-- `base_path` — Base path assignment helper
 
 # Filters Reference
 ---
 
 Filters are applied to variables using the pipe `|` syntax. Multiple filters can be chained.
 
+**Arguments use parentheses**, not colons:
+
 ```liquid
-{{ value | filter1 | filter2: arg }}
+{{ value | truncatewords(10) }}
+{{ value | default("fallback") }}
+{{ value | slice(0, 5) }}
+{{ value | remove("<p>") }}
+```
+
+Unquoted arguments are resolved as variables:
+
+```liquid
+{{ page.excerpt | default(site.description) }}
+{{ site.locale | slice(0, 2) }}
 ```
 
 ### String Filters
@@ -705,7 +688,8 @@ Filters are applied to variables using the pipe `|` syntax. Multiple filters can
 - `prepend` — `{{ val | prepend("prefix") }}` — Add string before value
 - `append` — `{{ val | append("suffix") }}` — Add string after value
 - `remove` — `{{ val | remove("str") }}` — Remove all occurrences of substring
-- `slice` — `{{ val | slice(0, 5) }}` — Extract substring (start, length)
+- `slice` — `{{ val | slice(0, 5) }}` — Extract substring (start, length). Negative start counts from end
+- `divided_by` — `{{ val | divided_by(5) }}` — Integer division
 - `abs` — `{{ val | abs }}` — Absolute value of integer
 
 ### Size Filter
@@ -722,7 +706,7 @@ Filters are applied to variables using the pipe `|` syntax. Multiple filters can
 ```liquid
 {{ page.title | upcase | prepend("TITLE: ") }}
 {{ page.date | date_to_string }}
-{{ author.bio | truncatewords(20) | default("No bio available.") }}
+{{ social.email | truncatewords(20) | default("No email available.") }}
 {{ post.title | strip_html | downcase | slugify }}
 ```
 
@@ -735,8 +719,8 @@ Filters are applied to variables using the pipe `|` syntax. Multiple filters can
 #### `{% if %}` / `{% elsif %}` / `{% else %}` / `{% endif %}`
 
 ```liquid
-{% if page.author_profile == "true" %}
-  <div class="sidebar">...</div>
+{% if page.read_time == "true" %}
+  <span class="read-time">Estimated read time</span>
 {% endif %}
 ```
 
@@ -798,7 +782,7 @@ Loads and renders a template from `templates/includes/`.
 
 ```liquid
 {% include "masthead.html" %}
-{% include "author-profile.html" %}
+{% include "read-time.html" %}
 ```
 
 If the file is not found, outputs: `[Include not found: filename]`
@@ -828,6 +812,7 @@ Sets a variable in the current scope.
 The `assets/` directory at the project root is copied to `public/assets/` as-is. This includes:
 
 - `assets/css/main.css` — Main stylesheet
+- `assets/icons/` — Inline SVG icons
 - Any JavaScript files
 - Any other static resources
 
@@ -862,8 +847,9 @@ public/
 ├── 404.html                      # Error page
 ├── sitemap.xml                   # XML sitemap
 ├── feed.xml                      # Atom feed
-├── assets/                       # CSS, JS, images
-│   └── css/main.css
+├── assets/                       # CSS, JS, images, icons
+│   ├── css/main.css
+│   └── icons/                    # Inline SVG icons
 ├── files/                        # Static files from content/files/
 ├── images/                       # Images from content/images/
 ├── <section>/                    # Section index pages
@@ -980,6 +966,13 @@ Edit `templates/includes/footer.html` to change:
 - Social links
 - Copyright text
 - Footer layout
+
+### Adding Custom Icons
+
+1. Place your SVG file in `assets/icons/`
+2. Ensure it has `fill="currentColor"` for theme support
+3. Add a corresponding config key in `config.toml`
+4. Add the icon block to `templates/includes/footer.html`
 
 # Troubleshooting
 ---
