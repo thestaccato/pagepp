@@ -28,8 +28,8 @@ SiteConfig load_config(const fs::path& config_path) {
     cfg.baseurl = tbl["baseurl"].value_or(std::string(""));
     cfg.locale = tbl["locale"].value_or(std::string("en-US"));
 
-    if (auto author = tbl["author"].as_table()) {
-        cfg.author = toml_table_to_dict(*author);
+    if (auto social = tbl["social"].as_table()) {
+        cfg.social = toml_table_to_dict(*social);
     }
 
     return cfg;

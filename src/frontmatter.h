@@ -9,6 +9,7 @@ struct FrontMatter {
 
     std::string get_str(const std::string& key, const std::string& def = "") const {
         if (auto val = meta[key].as_string()) return std::string(val->get());
+        if (auto val = meta[key].as_boolean()) return val->get() ? "true" : "false";
         return def;
     }
     bool get_bool(const std::string& key, bool def = false) const {
