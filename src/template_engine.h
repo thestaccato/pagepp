@@ -35,7 +35,7 @@ struct Context {
     void set_all(const std::map<std::string, std::string>& vars);
 };
 
-enum class NodeType { Text, Variable, If, For, Include, Assign, Toc };
+enum class NodeType { Text, Variable, If, For, Include, Assign };
 
 struct TemplateNode {
     NodeType type;

@@ -10,7 +10,7 @@ struct SiteConfig {
     std::string baseurl;
     std::string locale;
 
-    Dict social;
+    Dict author;
     DictList navigation;
 };
 
